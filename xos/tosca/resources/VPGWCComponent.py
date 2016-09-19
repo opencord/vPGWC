@@ -6,7 +6,7 @@ sys.path.append("/opt/tosca")
 from translator.toscalib.tosca_template import ToscaTemplate
 import pdb
 
-from services.vpgwc.models import VPGWCComponent, MCORDService
+from services.vpgwc.models import VPGWCComponent, VPGWCService
 
 from xosresource import XOSResource
 
@@ -21,7 +21,7 @@ class XOSVPGWCComponent(XOSResource):
 
         provider_name = self.get_requirement("tosca.relationships.MemberOfService", throw_exception=throw_exception)
         if provider_name:
-            args["provider_service"] = self.get_xos_object(MCORDService, throw_exception=throw_exception, name=provider_name)
+            args["provider_service"] = self.get_xos_object(VPGWCService, throw_exception=throw_exception, name=provider_name)
 
         return args
 
