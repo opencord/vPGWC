@@ -1,6 +1,6 @@
 [gerrit]
 host=gerrit.opencord.org
 port=29418
-project=onos.git
+project=vPGWC.git
 defaultremote=origin
 defaultbranch=master
