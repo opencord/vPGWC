@@ -1,7 +1,7 @@
 import os
 import sys
 from django.db.models import Q, F
-from services.vpgwc.models import MCORDService, VPGWCComponent
+from services.vpgwc.models import VPGWCService, VPGWCComponent
 from synchronizers.base.SyncInstanceUsingAnsible import SyncInstanceUsingAnsible
 
 parentdir = os.path.join(os.path.dirname(__file__), "..")
