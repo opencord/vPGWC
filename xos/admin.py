@@ -4,7 +4,19 @@ from core.middleware import get_request
 from core.models import User
 from django import forms
 from django.contrib import admin
-from services.vpgwc.models import VPGWCService, VPGWCComponent, MCORD_KIND
+from services.vpgwc.models import VPGWCService, VPGWCTenant, MCORD_KIND
+
+class VPGWCServiceForm(forms.ModelForm):
+
+    class Meta:
+        model = VPGWCService
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super(VPGWCServiceForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        return super(VPGWCServiceForm, self).save(commit=commit)
 
 # The class to provide an admin interface on the web for the service.
 # We do only configuration here and don't change any logic because the logic
@@ -14,6 +26,10 @@ class VPGWCServiceAdmin(ReadOnlyAwareAdmin):
     model = VPGWCService
     verbose_name = "vPGWC Service"
     verbose_name_plural = "vPGWC Services"
+    # Inlines are used to denote other models that can be edited on the same
+    # form as this one. In this case the service form also allows changes
+    # to slices.
+    inlines = [SliceInline]
 
     # Setting list_display creates columns on the admin page, each value here
     # is a column, the column is populated for every instance of the model.
@@ -37,11 +53,6 @@ class VPGWCServiceAdmin(ReadOnlyAwareAdmin):
 
     # Denotes the fields that are readonly and cannot be changed.
     readonly_fields = ('backend_status_text', )
-
-    # Inlines are used to denote other models that can be edited on the same
-    # form as this one. In this case the service form also allows changes
-    # to slices.
-    inlines = [SliceInline]
 
     extracontext_registered_admins = True
 
@@ -72,7 +83,11 @@ class VPGWCServiceAdmin(ReadOnlyAwareAdmin):
 # service because tenants vary more than services and there isn't a common form.
 # This allows us to change the python behavior for the admin form to save extra
 # fields and control defaults.
-class VPGWCComponentForm(forms.ModelForm):
+class VPGWCTenantForm(forms.ModelForm):
+
+    class Meta:
+        model = VPGWCTenant
+        fields = '__all__'
     # Defines a field for the creator of this service. It is a dropdown which
     # is populated with all of the users.
     creator = forms.ModelChoiceField(queryset=User.objects.all())
@@ -80,9 +95,10 @@ class VPGWCComponentForm(forms.ModelForm):
     display_message = forms.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
-        super(VPGWCComponentForm, self).__init__(*args, **kwargs)
+        super(VPGWCTenantForm, self).__init__(*args, **kwargs)
         # Set the kind field to readonly
         self.fields['kind'].widget.attrs['readonly'] = True
+        self.fields['kind'].initial = "vpgwc"
         # Define the logic for obtaining the objects for the provider_service
         # dropdown of the tenant form.
         self.fields[
@@ -101,7 +117,6 @@ class VPGWCComponentForm(forms.ModelForm):
             self.fields['creator'].initial = get_request().user
             if VPGWCService.get_service_objects().exists():
                 self.fields["provider_service"].initial = VPGWCService.get_service_objects().all()[0]
-
     # This function describes what happens when the save button is pressed on
     # the tenant form. In this case we set the values for the instance that were
     # entered.
@@ -109,33 +124,30 @@ class VPGWCComponentForm(forms.ModelForm):
         self.instance.creator = self.cleaned_data.get("creator")
         self.instance.display_message = self.cleaned_data.get(
             "display_message")
-        return super(VPGWCComponentForm, self).save(commit=commit)
-
-    class Meta:
-        model = VPGWCComponent
-        fields = '__all__'
+        return super(VPGWCTenantForm, self).save(commit=commit)
 
 
 # Define the admin form for the tenant. This uses a similar structure as the
 # service but uses HelloWorldTenantCompleteForm to change the python behavior.
-class VPGWCComponentAdmin(ReadOnlyAwareAdmin):
-    verbose_name = "vPGWC Component"
-    verbose_name_plural = "vPGWC Components"
+class VPGWCTenantAdmin(ReadOnlyAwareAdmin):
+    verbose_name = "vPGWC Service Tenant"
+    verbose_name_plural = "vPGWC Service Tenants"
+    form = VPGWCTenantForm
+
     list_display = ('id', 'backend_status_icon', 'instance', 'display_message')
-    list_display_links = ('backend_status_icon', 'instance', 'display_message',
-                          'id')
+    list_display_links = ('backend_status_icon', 'instance', 'display_message', 'id')
     fieldsets = [(None, {'fields': ['backend_status_text', 'kind',
                                     'provider_service', 'instance', 'creator',
                                     'display_message'],
                          'classes': ['suit-tab suit-tab-general']})]
     readonly_fields = ('backend_status_text', 'instance',)
-    form = VPGWCComponentForm
+
 
     suit_form_tabs = (('general', 'Details'),)
 
     def queryset(self, request):
-        return VPGWCComponent.get_tenant_objects_by_user(request.user)
+        return VPGWCTenant.get_tenant_objects_by_user(request.user)
 
 # Associate the admin forms with the models.
 admin.site.register(VPGWCService, VPGWCServiceAdmin)
-admin.site.register(VPGWCComponent, VPGWCComponentAdmin)
+admin.site.register(VPGWCTenant, VPGWCTenantAdmin)
