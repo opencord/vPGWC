@@ -3,7 +3,7 @@ tosca_definitions_version: tosca_simple_yaml_1_0
 description: Onboard the vPGWC service
 
 imports:
-   - custom_types/xos.yaml
+  - custom_types/xos.yaml
 
 topology_template:
   node_templates:
@@ -19,9 +19,8 @@ topology_template:
           synchronizer: synchronizer/manifest
           synchronizer_run: vpgwc-synchronizer.py
           #tosca_custom_types: exampleservice.yaml
-          tosca_resource: tosca/resources/VPGWCComponent.py, tosca/resources/VPGWCService.py
+          tosca_resource: tosca/resources/VPGWCTenant.py, tosca/resources/VPGWCService.py
           #rest_service: subdirectory:vsg api/service/vsg/vsgservice.py
           #rest_tenant: subdirectory:cord api/tenant/cord/vsg.py
           private_key: file:///opt/xos/key_import/vPGWC_rsa
           public_key: file:///opt/xos/key_import/vPGWC_rsa.pub
-

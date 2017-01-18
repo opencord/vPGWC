@@ -1,14 +1,14 @@
-from services.vpgwc.models import VPGWCComponent, VPGWCService
+from services.vpgwc.models import VPGWCTenant, VPGWCService
 from xosresource import XOSResource
 
-class XOSVPGWCComponent(XOSResource):
-    provides = "tosca.nodes.VPGWCComponent"
-    xos_model = VPGWCComponent
+class XOSVPGWCTenant(XOSResource):
+    provides = "tosca.nodes.VPGWCTenant"
+    xos_model = VPGWCTenant
     copyin_props = ["s5s8_pgw_tag", "display_message"]
     name_field = None
 
     def get_xos_args(self, throw_exception=True):
-        args = super(XOSVPGWCComponent, self).get_xos_args()
+        args = super(XOSVPGWCTenant, self).get_xos_args()
 
         provider_name = self.get_requirement("tosca.relationships.MemberOfService", throw_exception=throw_exception)
         if provider_name:
@@ -27,5 +27,5 @@ class XOSVPGWCComponent(XOSResource):
         pass
 
     def can_delete(self, obj):
-        return super(XOSVPGWCComponent, self).can_delete(obj)
+        return super(XOSVPGWCTenant, self).can_delete(obj)
 

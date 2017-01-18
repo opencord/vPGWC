@@ -10,7 +10,8 @@ port=5432
 [api]
 nova_enabled=True
 
-# Sets options for the observer
+
+# Sets options for the synchronizer
 [observer]
 # Optional name
 name=vpgwc

@@ -1,4 +1,3 @@
-from django.db import models
 from core.models import Service, PlCoreBase, Slice, Instance, Tenant, TenantWithContainer, Node, Image, User, Flavor, Subscriber, NetworkParameter, NetworkParameterType, AddressPool, Port
 from core.models.plcorebase import StrippedCharField
 import os
@@ -14,11 +13,13 @@ from core.models import SlicePrivilege, SitePrivilege
 from sets import Set
 from xos.config import Config
 
-MCORD_KIND = "RAN" # This should be changed later I did it fo demo
+MCORD_KIND = "EPC"
+SERVICE_NAME_VERBOSE = 'VPGWC Service'
+SERVICE_NAME_VERBOSE_PLURAL = 'VPGWC Services'
+TENANT_NAME_VERBOSE = 'VPGWC Service Tenant'
+TENANT_NAME_VERBOSE_PLURAL = 'VPGWC Service Tenants'
+
 MCORD_USE_VTN = getattr(Config(), "networking_use_vtn", False)
-VBBU_KIND = "RAN"
-VSGW_KIND = "vSGW"
-VPGWC_KIND = "RAN"
 vbbu_net_types = ("s1u", "s1mme", "rru")
 vpgwc_net_types = ("s5s8")
 # The class to represent the service. Most of the service logic is given for us
@@ -40,17 +41,17 @@ class VPGWCService(Service):
 # This is the class to represent the tenant. Most of the logic is given to use
 # in TenantWithContainer, however there is some configuration and logic that
 # we need to define for this example.
-class VPGWCComponent(TenantWithContainer):
+class VPGWCTenant(TenantWithContainer):
 
+
+    # The kind of the service is used on forms to differentiate this service
+    # from the other services.
+    KIND = MCORD_KIND
     class Meta:
         # Same as a above, HelloWorldTenantComplete is represented as a
         # TenantWithContainer, but we change the python behavior.
         proxy = True
         verbose_name = "VPGWC Service Component"
-
-    # The kind of the service is used on forms to differentiate this service
-    # from the other services.
-    KIND = VPGWC_KIND
 
     # Ansible requires that the sync_attributes field contain nat_ip and nat_mac
     # these will be used to determine where to SSH to for ansible.
@@ -61,19 +62,20 @@ class VPGWCComponent(TenantWithContainer):
     # the fields are.
     default_attributes = {"display_message": "New vPGWC Component", "s5s8_pgw_tag": "300"}
     def __init__(self, *args, **kwargs):
-        mcord_services = VPGWCService.get_service_objects().all()
+        pgwc_services = VPGWCService.get_service_objects().all()
         # When the tenant is created the default service in the form is set
         # to be the first created HelloWorldServiceComplete
-        if mcord_services:
+        if pgwc_services:
             self._meta.get_field(
-                "provider_service").default = mcord_services[0].id
-        super(VPGWCComponent, self).__init__(*args, **kwargs)
+                "provider_service").default = pgwc_services[0].id
+        super(VPGWCTenant, self).__init__(*args, **kwargs)
 
     def can_update(self, user):
         #Allow creation of this model instances for non-admin users also
         return True
 
     def save(self, *args, **kwargs):
+        '''
         if not self.creator:
             if not getattr(self, "caller", None):
                 # caller must be set when creating a monitoring channel since it creates a slice
@@ -81,15 +83,15 @@ class VPGWCComponent(TenantWithContainer):
             self.creator = self.caller
             if not self.creator:
                 raise XOSProgrammingError("ServiceComponents's self.creator was not set")
-
-        super(VPGWCComponent, self).save(*args, **kwargs)
+        '''
+        super(VPGWCTenant, self).save(*args, **kwargs)
         # This call needs to happen so that an instance is created for this
         # tenant is created in the slice. One instance is created per tenant.
         model_policy_mcord_servicecomponent(self.pk)
 
     def save_instance(self, instance):
         with transaction.atomic():
-            super(VPGWCComponent, self).save_instance(instance)
+            super(VPGWCTenant, self).save_instance(instance)
             if instance.isolation in ["vm"]:
                 for ntype in vpgwc_net_types:
                     lan_network = self.get_lan_network(instance, ntype)
@@ -104,7 +106,7 @@ class VPGWCComponent(TenantWithContainer):
     def delete(self, *args, **kwargs):
         # Delete the instance that was created for this tenant
         self.cleanup_container()
-        super(VPGWCComponent, self).delete(*args, **kwargs)
+        super(VPGWCTenant, self).delete(*args, **kwargs)
 
     def find_or_make_port(self, instance, network, **kwargs):
         port = Port.objects.filter(instance=instance, network=network)
@@ -121,7 +123,7 @@ class VPGWCComponent(TenantWithContainer):
         slice = self.provider_service.slices.all()[0]
         lan_networks = [x for x in slice.networks.all() if ntype in x.name]
         if not lan_networks:
-            raise XOSProgrammingError("No lan_network")
+            #raise XOSProgrammingError("No lan_network")
         return lan_networks[0]
 
     def manage_container(self):
@@ -134,11 +136,11 @@ class VPGWCComponent(TenantWithContainer):
         # provides us
         slice = self.get_slice()
         if slice.default_isolation in ["container_vm", "container"]:
-            super(VPGWCComponent,self).manage_container()
+            super(VPGWCTenant,self).manage_container()
             return
 
         if not self.s5s8_pgw_tag:
-            raise XOSConfigurationError("S5S8_PGW_TAG is missed")
+           # raise XOSConfigurationError("S5S8_PGW_TAG is missed")
 
         if self.instance:
             # We're good.
@@ -229,9 +231,9 @@ def model_policy_mcord_servicecomponent(pk):
     # This section of code is atomic to prevent race conditions
     with transaction.atomic():
         # We find all of the tenants that are waiting to update
-        component = VPGWCComponent.objects.select_for_update().filter(pk=pk)
-        if not component:
+        tenant = VPGWCTenant.objects.select_for_update().filter(pk=pk)
+        if not tenant:
             return
         # Since this code is atomic it is safe to always use the first tenant
-        component = component[0]
-        component.manage_container()
+        tenant = tenant[0]
+        tenant.manage_container()
