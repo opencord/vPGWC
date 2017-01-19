@@ -123,7 +123,7 @@ class VPGWCTenant(TenantWithContainer):
         slice = self.provider_service.slices.all()[0]
         lan_networks = [x for x in slice.networks.all() if ntype in x.name]
         if not lan_networks:
-            #raise XOSProgrammingError("No lan_network")
+            raise XOSProgrammingError("No lan_network")
         return lan_networks[0]
 
     def manage_container(self):
@@ -140,7 +140,7 @@ class VPGWCTenant(TenantWithContainer):
             return
 
         if not self.s5s8_pgw_tag:
-           # raise XOSConfigurationError("S5S8_PGW_TAG is missed")
+            raise XOSConfigurationError("S5S8_PGW_TAG is missed")
 
         if self.instance:
             # We're good.
