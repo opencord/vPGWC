@@ -4,7 +4,7 @@ from xosresource import XOSResource
 class XOSVPGWCTenant(XOSResource):
     provides = "tosca.nodes.VPGWCTenant"
     xos_model = VPGWCTenant
-    copyin_props = ["s5s8_pgw_tag", "display_message"]
+    copyin_props = ["s5s8_pgw_tag", "display_message", "image_name"]
     name_field = None
 
     def get_xos_args(self, throw_exception=True):

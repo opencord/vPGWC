@@ -36,4 +36,7 @@ class SyncVPGWCTenant(SyncInstanceUsingAnsible):
     # Gets the attributes that are used by the Ansible template but are not
     # part of the set of default attributes.
     def get_extra_attributes(self, o):
-        return {"display_message": o.display_message, "s5s8_pgw_tag": o.s5s8_pgw_tag}
+        return {"display_message": o.display_message, 
+                "s5s8_pgw_tag": o.s5s8_pgw_tag, 
+                "image_name": o.image_name,
+               }
