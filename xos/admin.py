@@ -111,6 +111,8 @@ class VPGWCTenantForm(forms.ModelForm):
             self.fields['creator'].initial = self.instance.creator
             self.fields[
                 'display_message'].initial = self.instance.display_message
+            self.fields[
+                'image_name'].initial = self.instance.image_name
 
         # If there is not an instance then we need to set initial values.
         if (not self.instance) or (not self.instance.pk):
@@ -134,8 +136,8 @@ class VPGWCTenantAdmin(ReadOnlyAwareAdmin):
     verbose_name_plural = "vPGWC Service Tenants"
     form = VPGWCTenantForm
 
-    list_display = ('id', 'backend_status_icon', 'instance', 'display_message')
-    list_display_links = ('backend_status_icon', 'instance', 'display_message', 'id')
+    list_display = ('id', 'backend_status_icon', 'instance', 'display_message', 'image_name')
+    list_display_links = ('backend_status_icon', 'instance', 'display_message', 'id', 'image_name')
     fieldsets = [(None, {'fields': ['backend_status_text', 'kind',
                                     'provider_service', 'instance', 'creator',
                                     'display_message'],

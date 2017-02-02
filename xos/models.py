@@ -60,7 +60,7 @@ class VPGWCTenant(TenantWithContainer):
 
     # default_attributes is used cleanly indicate what the default values for
     # the fields are.
-    default_attributes = {"display_message": "New vPGWC Component", "s5s8_pgw_tag": "300"}
+    default_attributes = {"display_message": "New vPGWC Component", "s5s8_pgw_tag": "300", "image_name": "default"}
     def __init__(self, *args, **kwargs):
         pgwc_services = VPGWCService.get_service_objects().all()
         # When the tenant is created the default service in the form is set
@@ -183,6 +183,15 @@ class VPGWCTenant(TenantWithContainer):
         (a, b, c, d) = ip.split('.')
         return "02:42:%02x:%02x:%02x:%02x" % (int(a), int(b), int(c), int(d))
 
+  
+    @property
+    def image(self):
+        img = self.image_name.strip()
+        if img.lower() != "default":
+            return Image.objects.get(name=img)
+        else: 
+            return super(VMMETenant, self).image
+
     # Getter for the message that will appear on the webpage
     # By default it is "Hello World!"
     @property
@@ -194,6 +203,16 @@ class VPGWCTenant(TenantWithContainer):
     @display_message.setter
     def display_message(self, value):
         self.set_attribute("display_message", value)
+
+    @property
+    def image_name(self):
+        return self.get_attribute(
+            "image_name",
+            self.default_attributes['image_name'])
+
+    @image_name.setter
+    def image_name(self, value):
+        self.set_attribute("image_name", value)
 
     @property
     def s5s8_pgw_tag(self):
