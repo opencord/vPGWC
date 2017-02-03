@@ -190,7 +190,7 @@ class VPGWCTenant(TenantWithContainer):
         if img.lower() != "default":
             return Image.objects.get(name=img)
         else: 
-            return super(VMMETenant, self).image
+            return super(VPGWCTenant, self).image
 
     # Getter for the message that will appear on the webpage
     # By default it is "Hello World!"
