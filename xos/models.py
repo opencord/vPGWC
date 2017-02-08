@@ -89,19 +89,29 @@ class VPGWCTenant(TenantWithContainer):
         # tenant is created in the slice. One instance is created per tenant.
         model_policy_mcord_servicecomponent(self.pk)
 
+#    def save_instance(self, instance):
+#        with transaction.atomic():
+#            super(VPGWCTenant, self).save_instance(instance)
+#            if instance.isolation in ["vm"]:
+#                for ntype in vpgwc_net_types:
+#                    lan_network = self.get_lan_network(instance, ntype)
+#                    port = self.find_or_make_port(instance,lan_network)
+#                    if (ntype == "s5s8"):
+#                        port.set_parameter("s_tag", self.s5s8_pgw_tag)
+#                        port.set_parameter("neutron_port_name", "stag-%s" % self.s5s8_pgw_tag)
+#                        port.save()
+#                    else:
+#			return True
+
     def save_instance(self, instance):
         with transaction.atomic():
             super(VPGWCTenant, self).save_instance(instance)
             if instance.isolation in ["vm"]:
-                for ntype in vpgwc_net_types:
-                    lan_network = self.get_lan_network(instance, ntype)
+                if self.image_name == 'pgwu':
+                    lan_network = self.get_lan_network(instance, "wan_network")
                     port = self.find_or_make_port(instance,lan_network)
-                    if (ntype == "s5s8"):
-                        port.set_parameter("s_tag", self.s5s8_pgw_tag)
-                        port.set_parameter("neutron_port_name", "stag-%s" % self.s5s8_pgw_tag)
-                        port.save()
-                    else:
-			return True
+                    port.set_parameter("neutron_port_ip", "102.0.0.8")
+                    port.save()
 
     def delete(self, *args, **kwargs):
         # Delete the instance that was created for this tenant
