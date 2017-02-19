@@ -106,12 +106,12 @@ class VPGWCTenant(TenantWithContainer):
     def save_instance(self, instance):
         with transaction.atomic():
             super(VPGWCTenant, self).save_instance(instance)
-            if instance.isolation in ["vm"]:
-                if self.image_name == 'pgwu':
-                    lan_network = self.get_lan_network(instance, "wan_network")
-                    port = self.find_or_make_port(instance,lan_network)
-                    port.set_parameter("neutron_port_ip", "102.0.0.8")
-                    port.save()
+            #if instance.isolation in ["vm"]:
+            #    if self.image_name == 'pgwu':
+            #        lan_network = self.get_lan_network(instance, "wan_network")
+            #        port = self.find_or_make_port(instance,lan_network)
+            #        port.set_parameter("neutron_port_ip", "102.0.0.8")
+            #        port.save()
 
     def delete(self, *args, **kwargs):
         # Delete the instance that was created for this tenant
@@ -125,7 +125,7 @@ class VPGWCTenant(TenantWithContainer):
             print "port already exist", port[0]
         else:
             port = Port(instance=instance, network=network, **kwargs)
-            print "NETWORK", network, "MAKE_PORT", port 
+            print "NETWORK", network, "MAKE_PORT", port
             port.save()
         return port
 
@@ -167,7 +167,7 @@ class VPGWCTenant(TenantWithContainer):
         return slice
 
     def make_instance(self):
-        slice = self.provider_service.slices.all()[0]            
+        slice = self.provider_service.slices.all()[0]
         flavors = Flavor.objects.filter(name=slice.default_flavor)
 #        flavors = Flavor.objects.filter(name="m1.xlarge")
         if not flavors:
@@ -193,13 +193,13 @@ class VPGWCTenant(TenantWithContainer):
         (a, b, c, d) = ip.split('.')
         return "02:42:%02x:%02x:%02x:%02x" % (int(a), int(b), int(c), int(d))
 
-  
+
     @property
     def image(self):
         img = self.image_name.strip()
         if img.lower() != "default":
             return Image.objects.get(name=img)
-        else: 
+        else:
             return super(VPGWCTenant, self).image
 
     # Getter for the message that will appear on the webpage
