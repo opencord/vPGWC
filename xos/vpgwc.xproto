@@ -1,0 +1,16 @@
+option name = "vPGWC";
+option verbose_name = "VPGWCService";
+option legacy = "True";
+
+message VPGWCService (Service) {
+    option name = "VPGWCService";
+    option verbose_name = "Virtual Packet Gateway Control Service";
+}
+
+message VPGWCTenant (TenantWithContainer) {
+    option name = "VPGWCTenant";
+    option verbose_name = "Virtual Packet Gateway Control Tenant";
+    optional string display_message = 1 [db_index = False, max_length = 1024, null = True, blank = False, default = "New vpgwc Component"];
+    optional string s5s8_pgw_tag = 2 [db_index = False, max_length = 1024, null = True, content = "stripped", blank = False, default = "300"];
+    optional string image_name = 3 [db_index = False, max_length = 1024, null = True, content = "stripped", blank = False, default = "default"];
+}

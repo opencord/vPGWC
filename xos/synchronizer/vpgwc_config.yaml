@@ -1,0 +1,13 @@
+name: vpgwc-synchronizer
+accessor:
+  username: xosadmin@opencord.org
+  password: "@/opt/xos/services/vpgwc/credentials/xosadmin@opencord.org"
+required_models:
+  - VPGWCService
+  - VPGWCTenant
+  - ServiceDependency
+  - ServiceMonitoringAgentInfo
+dependency_graph: "/opt/xos/synchronizers/vpgwc/model-deps"
+steps_dir: "/opt/xos/synchronizers/vpgwc/steps"
+sys_dir: "/opt/xos/synchronizers/vpgwc/sys"
+model_policies_dir: "/opt/xos/synchronizers/vpgwc/model_policies"
