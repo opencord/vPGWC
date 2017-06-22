@@ -1,6 +1,6 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
 
-description: Onboard the exampleservice
+description: Onboard the vPGWC service
 
 imports:
    - custom_types/xos.yaml

@@ -15,27 +15,6 @@ node_types:
         properties:
             xos_base_props
             xos_base_service_props
-            view_url:
-                type: string
-                required: false
-            icon_url:
-                type: string
-                required: false
-            enabled:
-                type: boolean
-                required: true
-            published:
-                type: boolean
-                required: true
-            public_key:
-                type: string
-                required: false
-            private_key_fn:
-                type: string
-                required: false
-            versionNumber:
-                type: string
-                required: false
 
     tosca.nodes.VPGWCTenant:
         derived_from: tosca.nodes.Root
