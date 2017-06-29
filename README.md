@@ -1,6 +1,4 @@
-# Virtual Packet Gateway Control Service
-
-The `vPGWC` service is responsible for dictating QoS and bandwidth for a subscriber's session. It acts as an IP router with support for mobile specific tunneling and signaling protocols and provides access to external PDNs. The `vPGWC` service also manages policy enforcement, packet filtration for users, charging support, and lawful interception.
+# Virtual Packet Gateway Control-Plane Service
 
 ## Onboarding
 
