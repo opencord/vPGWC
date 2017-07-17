@@ -81,4 +81,3 @@ define(xos_base_tenant_props,
                 description: Service specific ID opaque to XOS but meaningful to service)
 
 # end m4 macros
-

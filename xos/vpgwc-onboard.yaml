@@ -15,7 +15,8 @@ topology_template:
           # base_url is non-null.
           xproto: ./
           admin: admin.py
-          tosca_custom_types: vpgwc.yaml
+#          models: models.py
+          tosca_custom_types: tosca/custom_types/vpgwc.yaml
           tosca_resource: tosca/resources/vpgwcservice.py, tosca/resources/vpgwctenant.py
           private_key: file:///opt/xos/key_import/mcord_rsa
           public_key: file:///opt/xos/key_import/mcord_rsa.pub
