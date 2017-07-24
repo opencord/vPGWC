@@ -1,4 +1,4 @@
-Sets options for the syncrhonizer
+# Sets options for the synchronizer
 [observer]
 name=vpgwc
 dependency_graph=/opt/xos/synchronizers/vpgwc/model-deps

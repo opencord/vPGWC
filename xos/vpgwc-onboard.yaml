@@ -7,7 +7,7 @@ imports:
 
 topology_template:
   node_templates:
-    vpgwc:
+    servicecontroller#vpgwc:
       type: tosca.nodes.ServiceController
       properties:
           base_url: file:///opt/xos_services/vpgwc/xos/
@@ -15,7 +15,9 @@ topology_template:
           # base_url is non-null.
           xproto: ./
           admin: admin.py
-#          models: models.py
+          admin_template: templates/vpgwcadmin.html
+          #synchronizer: synchronizer/manifest
+          #synchronizer_run: vpgwc-synchronizer.py
           tosca_custom_types: tosca/custom_types/vpgwc.yaml
           tosca_resource: tosca/resources/vpgwcservice.py, tosca/resources/vpgwctenant.py
           private_key: file:///opt/xos/key_import/mcord_rsa

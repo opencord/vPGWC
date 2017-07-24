@@ -11,7 +11,6 @@ class XOSVPGWCTenant(XOSResource):
     def get_xos_args(self, throw_exception=True):
         args = super(XOSVPGWCTenant, self).get_xos_args()
 
-        # ExampleTenant must always have a provider_service
         provider_name = self.get_requirement("tosca.relationships.TenantOfService", throw_exception=True)
         if provider_name:
             args["provider_service"] = self.get_xos_object(Service, throw_exception=True, name=provider_name)
