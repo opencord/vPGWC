@@ -1,5 +1,6 @@
 option name = "vPGWC";
 option verbose_name = "Virtual Packet Gateway -- Control";
+option kind = "vEPC";
 
 message VPGWCService (Service) {
     option name = "VPGWCService";
