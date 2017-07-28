@@ -9,7 +9,7 @@ node_types:
     tosca.nodes.VPGWCService:
         derived_from: tosca.nodes.Root
         description: >
-            CORD: The vPGWC Service
+            CORD - The vPGWC Service
         capabilities:
             xos_base_service_caps
         properties:
@@ -19,7 +19,7 @@ node_types:
     tosca.nodes.VPGWCTenant:
         derived_from: tosca.nodes.Root
         description: >
-            CORD: The vPGWC Tenant
+            CORD - The vPGWC Tenant
         properties:
             xos_base_tenant_props
             display_message:
