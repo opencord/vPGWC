@@ -1,5 +1,5 @@
 from django.db import models
-from core.models import Service, PlCoreBase, Slice, Instance, Tenant, TenantWithContainer, Node, Image, User, Flavor, NetworkParameter, NetworkParameterType, Port, AddressPool
+from core.models import Service, PlCoreBase, Slice, Instance, Tenant, TenantWithContainer, Node, Image, User, Flavor, NetworkParameter, NetworkParameterType, Port, AddressPool, SlicePrivilege, SitePrivilege
 from core.models.plcorebase import StrippedCharField
 import os
 from django.db import models, transaction
@@ -10,12 +10,7 @@ from core.models import Tag
 from core.models.service import LeastLoadedNodeScheduler
 import traceback
 from xos.exceptions import *
+from sets import Set
 from xos.config import Config
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-
-MCORD_KIND = "vEPC"
-SERVICE_NAME_VERBOSE = 'Virtual Packet Gateway -- Control Service'
-SERVICE_NAME_VERBOSE_PLURAL = 'Virtual Packet Gateway -- Control Services'
-TENANT_NAME_VERBOSE = 'Virtual Packet Gateway -- Control Tenant'
-TENANT_NAME_VERBOSE_PLURAL = 'Virtual Packet Gateway -- Control Tenants'
