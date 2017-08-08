@@ -33,20 +33,6 @@ class SyncVPGWCTenant(SyncInstanceUsingAnsible):
 
         return objs
 
-    #def get_vpgwc(self, o):
-    #    if not o.provider_service:
-    #        return None
-
-    #    vpgwc = VPGWCService.objects.filter(id=o.provider_service.id)
-
-    #    if not vpgwc:
-    #        return None
-
-    #    return vpgwc[0]
-
-    # Gets the attributes that are used by the Ansible template but are not
-    # part of the set of default attributes.
-
     def get_extra_attributes(self, o):
         fields = {}
         fields['display_message'] = o.display_message

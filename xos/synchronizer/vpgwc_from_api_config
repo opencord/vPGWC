@@ -15,7 +15,7 @@ proxy_ssh_user=root
 enable_watchers=True
 accessor_kind=api
 accessor_password=@/opt/xos/services/vpgwc/credentials/xosadmin@opencord.org
-#required_models=VPGWCService, VPGWCTenant, ServiceDependency, ServiceMonitoringAgentInfo
+#required_models=VPGWCService, VPGWCTenant, ServiceDependency
 [networking]
 use_vtn=True
 

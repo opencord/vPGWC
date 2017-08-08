@@ -1,5 +1,6 @@
 option name = "vPGWC";
 option verbose_name = "Virtual Packet Gateway -- Control";
+option app_label = "vpgwc";
 option kind = "vEPC";
 option legacy = "True";
 
