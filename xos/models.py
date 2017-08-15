@@ -23,6 +23,11 @@ class VPGWCService(VPGWCService_decl):
    class Meta:
         proxy = True 
 
+   def create_tenant(self, **kwargs):
+       t = VPGWCTenant(kind="vEPC", provider_service=self, connect_method="na", **kwargs)
+       t.save()
+       return t
+
 class VPGWCTenant(VPGWCTenant_decl):
    class Meta:
         proxy = True 
@@ -37,6 +42,13 @@ class VPGWCTenant(VPGWCTenant_decl):
        super(VPGWCTenant, self).__init__(*args, **kwargs)
 
    def save(self, *args, **kwargs):
+       if not self.creator:
+           if not getattr(self, "caller", None):
+               raise XOSProgrammingError("VPGWCTenant's self.caller was not set")
+           self.creator = self.caller
+           if not self.creator:
+               raise XOSProgrammingError("VPGWCTenant's self.creator was not set")
+
        # Update the instance that was created for this tenant
        super(VPGWCTenant, self).save(*args, **kwargs)
        model_policy_vpgwctenant(self.pk)   
