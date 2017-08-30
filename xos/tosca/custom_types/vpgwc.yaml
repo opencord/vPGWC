@@ -90,12 +90,3 @@ node_types:
                 type: string
                 required: false
                 description: Service specific ID opaque to XOS but meaningful to service
-            display_message:
-                type: string
-                required: false
-            s5s8_pgw_tag:
-                type: string
-                required: false
-            image_name:
-                type: string
-                required: false

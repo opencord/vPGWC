@@ -22,12 +22,3 @@ node_types:
             CORD - The vPGWC Tenant
         properties:
             xos_base_tenant_props
-            display_message:
-                type: string
-                required: false
-            s5s8_pgw_tag:
-                type: string
-                required: false
-            image_name:
-                type: string
-                required: false

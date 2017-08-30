@@ -16,8 +16,6 @@ import traceback
 from xos.exceptions import *
 from sets import Set
 from xos.config import Config
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 
 class VPGWCService(VPGWCService_decl):
    class Meta:
