@@ -1,5 +1,6 @@
 from core.models.plcorebase import *
 from models_decl import VPGWCService_decl
+from models_decl import VPGWCVendor_decl
 from models_decl import VPGWCTenant_decl
 
 from django.db import models
@@ -26,6 +27,10 @@ class VPGWCService(VPGWCService_decl):
        t.save()
        return t
 
+class VPGWCVendor(VPGWCVendor_decl):
+   class Meta:
+       proxy = True
+
 class VPGWCTenant(VPGWCTenant_decl):
    class Meta:
         proxy = True 
@@ -38,6 +43,17 @@ class VPGWCTenant(VPGWCTenant_decl):
            self._meta.get_field(
                 "provider_service").default = vpgwcservice[0].id
        super(VPGWCTenant, self).__init__(*args, **kwargs)
+
+   @property
+   def image(self):
+       if not self.vpgwc_vendor:
+           return super(VPGWCTenant, self).image
+       return self.vpgwc_vendor.image
+   
+   def save_instance(self, instance):
+       if self.vpgwc_vendor:
+           instance.flavor = self.vpgwc_vendor.flavor
+       super(VPGWCTenant, self).save_instance(instance)
 
    def save(self, *args, **kwargs):
        if not self.creator:

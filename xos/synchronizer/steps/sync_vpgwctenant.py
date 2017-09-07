@@ -8,7 +8,6 @@ parentdir = os.path.join(os.path.dirname(__file__), "..")
 sys.path.insert(0, parentdir)
 
 class SyncVPGWCTenant(SyncInstanceUsingAnsible):
-
     provides = [VPGWCTenant]
 
     observes = VPGWCTenant
@@ -23,22 +22,12 @@ class SyncVPGWCTenant(SyncInstanceUsingAnsible):
         super(SyncVPGWCTenant, self).__init__(*args, **kwargs)
 
     def fetch_pending(self, deleted):
-
         if (not deleted):
             objs = VPGWCTenant.get_tenant_objects().filter(
                 Q(enacted__lt=F('updated')) | Q(enacted=None), Q(lazy_blocked=False))
         else:
-
             objs = VPGWCTenant.get_deleted_tenant_objects()
 
         return objs
 
-    def get_extra_attributes(self, o):
-        fields = {}
-        fields['display_message'] = o.display_message
-        fields['s5s8_pgw_tag'] = o.s5s8_pgw_tag
-        fields['image_name'] = o.image_name
-        return fields
 
-    def delete_record(self, port):
-        pass
